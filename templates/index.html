@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Job Scam Detector</title>
+  <style>
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: #0d1117;
+      color: #e6edf3;
+      max-width: 700px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+    h1 { color: #00ff9c; font-size: 1.5rem; }
+    p.subtitle { color: #8b949e; margin-top: -10px; }
+    textarea {
+      width: 100%;
+      height: 160px;
+      background: #161b22;
+      color: #e6edf3;
+      border: 1px solid #30363d;
+      border-radius: 8px;
+      padding: 12px;
+      font-size: 0.95rem;
+      resize: vertical;
+    }
+    button {
+      background: #00ff9c;
+      color: #0d1117;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 12px;
+    }
+    button:hover { opacity: 0.85; }
+    .result {
+      margin-top: 24px;
+      padding: 16px;
+      border-radius: 8px;
+      border: 1px solid #30363d;
+    }
+    .scam { background: #2d1214; border-color: #f85149; }
+    .legit { background: #12261b; border-color: #3fb950; }
+    .label {
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+    .scam .label { color: #f85149; }
+    .legit .label { color: #3fb950; }
+    ul { padding-left: 20px; }
+    li { margin-bottom: 6px; color: #c9d1d9; }
+  </style>
+</head>
+<body>
+  <h1>🛡️ Job Scam Detector</h1>
+  <p class="subtitle">Paste a job posting or recruiter message to check for scam red flags.</p>
+
+  <form method="POST">
+    <textarea name="message_text" placeholder="Paste the job posting or message here...">{{ message_text }}</textarea><br>
+    <button type="submit">Check Message</button>
+  </form>
+
+  {% if result %}
+  <div class="result {{ 'scam' if result.label == 'scam' else 'legit' }}">
+    <div class="label">
+      {% if result.label == 'scam' %}⚠️ Likely SCAM{% else %}✅ Likely Legit{% endif %}
+      ({{ (result.scam_probability * 100) | round(1) }}% scam probability)
+    </div>
+    {% if result.red_flags %}
+    <p style="margin-top:12px; margin-bottom:6px;">Red flags detected:</p>
+    <ul>
+      {% for flag in result.red_flags %}
+      <li>{{ flag }}</li>
+      {% endfor %}
+    </ul>
+    {% else %}
+    <p style="margin-top:12px;">No major red flags detected in the wording.</p>
+    {% endif %}
+  </div>
+  {% endif %}
+
+  <p style="margin-top:30px; color:#6e7681; font-size:0.8rem;">
+    This is a portfolio project trained on a small curated dataset — treat results as a signal, not a guarantee. Always verify job offers independently.
+  </p>
+</body>
+</html>
